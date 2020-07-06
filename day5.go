@@ -10,9 +10,8 @@ import (
 func main() {
 	opcode := readCSV()
 
-	newOpcode, output := calcOutput(opcode, 1)
+	_, output := calcOutput(opcode, 5)
 	
-	fmt.Println(newOpcode)
 	fmt.Println(output)
 }
 
@@ -22,16 +21,14 @@ func calcOutput(origOpcode []int64, input int64) ([]int64, []int64){
 	var outputs []int64
 	i := 0
 	for i < len(opcode) - 3 {
-		fmt.Println(i)
 		oc := opcode[i]
-		fmt.Println(oc)
 		var param1 int64
 		var param2 int64
-		if oc < 4 {
+		if oc == 4 || oc == 3 {
+			param1 = opcode[opcode[i + 1]]
+		} else if oc < 10 {
 			param1 = opcode[opcode[i + 1]]
 			param2 = opcode[opcode[i + 2]]
-		} else if oc == 4 {
-			param1 = opcode[opcode[i + 1]]
 		} else {
 			firstMode := (oc / 100) % 10
 			secondMode := (oc / 1000) % 10
@@ -63,8 +60,35 @@ func calcOutput(origOpcode []int64, input int64) ([]int64, []int64){
 		} else if (oc == 4) {
 			outputs = append(outputs, param1)
 			i += 2
+		} else if (oc == 5) {
+			if param1 != 0 {
+				i = int(param2)
+			} else {
+				i += 3
+			}
+		} else if (oc == 6) {
+			if param1 == 0 {
+				i = int(param2)
+			} else {
+				i += 3
+			}
+		} else if (oc == 7) {
+			if param1 < param2 {
+				opcode[opcode[i+3]] = 1
+			} else {
+				opcode[opcode[i+3]] = 0
+			}
+			i += 4
+		} else if (oc == 8) {
+			if param1 == param2 {
+				opcode[opcode[i+3]] = 1
+			} else {
+				opcode[opcode[i+3]] = 0
+			}
+			i += 4
 		}
 	}
+
 
 	return opcode, outputs
 }
