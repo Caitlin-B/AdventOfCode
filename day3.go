@@ -21,9 +21,8 @@ func main() {
 		fmt.Println("Unable to parse csv") 
 	}
 
-	fmt.Println(path1[0], "IGNORE")
-	fmt.Println(path2[0], "IGNORE")
-
+	//path1 = []string{"R98","U47","R26","D63","R33","U87","L62","D20","R33","U53","R51"}
+	//path2 = []string{"U98","R91","D20","R16","D67","R40","U7","R15","U6","R7"}
 	//calculate every step a path takes 
 	//calcPoints gives an array of each point the path crosses
 	points1 := calcPoints(path1)
@@ -41,7 +40,7 @@ func main() {
 		}
 	}
 
-	fmt.Println(intersections)
+	fmt.Println("INTERSECTIONS", intersections[1:])
 
 	//find manhattan distance of each intersection
 	var manhattans []int
@@ -51,8 +50,43 @@ func main() {
 		manhattans = append(manhattans, distance)
 	}
 
-	fmt.Println(manhattans)
+	//fmt.Println("MANHATTANS", manhattans)
 
+	//calc steps taken to intersections for each path
+	fmt.Println(".")
+	//fmt.Println(points1[1:])
+	//fmt.Println(points2[1:])
+	//fmt.Println(".")
+	steps1 := calcSteps(points1[1:], intersections[1:])
+	steps2 := calcSteps(points2[1:], intersections[1:])
+
+	fmt.Println("STEPS 1", steps1) 
+	fmt.Println("STEPS 2", steps2)
+
+	var totalSteps []int
+
+	for i := range steps1 {
+		sum:= steps1[i] + steps2[i] + 2
+		totalSteps = append(totalSteps, sum)
+	}
+	fmt.Println(".")
+	fmt.Println("TOTAL STEPS", totalSteps)
+
+
+}
+
+func calcSteps(points [][]int, intersections[][]int) []int{
+	//calc how many steps it takes to get to each intersection
+	var steps []int
+	for _, intersect := range intersections {
+		for i, point := range points {
+			if point[0] == intersect[0] && point[1] == intersect[1] {
+				steps = append(steps, i)
+			}
+		}
+	}
+
+	return steps
 }
 
 func calcPoints(path []string) [][]int {
@@ -68,28 +102,28 @@ func calcPoints(path []string) [][]int {
 
 		//move steps according to direction, add to points
 		if direction == "L" {
-			for i := 0; i <= steps; i++ {
+			for i := 1; i <= steps; i++ {
 				newPos := make([]int, 2)
 				copy(newPos, prevPos)
 				newPos[0] = newPos[0] - i
 				points = append(points, newPos)
 			}
 		} else if direction == "R" {
-			for i := 0; i <= steps; i++ {
+			for i := 1; i <= steps; i++ {
 				newPos := make([]int, 2)
 				copy(newPos, prevPos)
 				newPos[0] = newPos[0] + i
 				points = append(points, newPos)
 			}
 		} else if direction == "U" {
-			for i := 0; i <= steps; i++ {
+			for i := 1; i <= steps; i++ {
 				newPos := make([]int, 2)
 				copy(newPos, prevPos)
 				newPos[1] = newPos[1] + i
 				points = append(points, newPos)
 			}
 		} else if direction == "D" {
-			for i := 0; i <= steps; i++ {
+			for i := 1; i <= steps; i++ {
 				newPos := make([]int, 2)
 				copy(newPos, prevPos)
 				newPos[1] = newPos[1] - i
