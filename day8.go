@@ -8,18 +8,16 @@ import (
 )
 
 func main() {
-	pixels := readCSV()
-	layers := make([][]string, len(pixels)/150)
+	image := readCSV()
+	layers := make([][]string, len(image)/150)
 	i := 0
 	j := 0
-	for i < len(pixels) {
-		layers[j] = pixels[i:i+150]
+	for i < len(image) {
+		layers[j] = image[i:i+150]
 		i += 150
 		j ++
 	}
-
 	lowestZeros := []int{100,0}
-
 	for i, layer := range layers {
 		zeros := 0
 		for _, pixel := range layer {
@@ -27,18 +25,13 @@ func main() {
 				zeros ++
 			}
 		}
-
 		if zeros < lowestZeros[0] {
 			lowestZeros = []int{zeros, i}
 		}
 	}
-
-	fmt.Println(lowestZeros)
 	fewestZerosLayer := layers[lowestZeros[1]]
-
 	ones := 0
 	twos := 0
-
 	for _, v := range fewestZerosLayer {
 		if v == "1" {
 			ones++
@@ -48,7 +41,36 @@ func main() {
 		}
 	}
 
-	fmt.Println(ones * twos)
+	pixels := make([][]string, 150)
+
+	for i := range layers[0] {
+		for _, v := range layers {
+			pixels[i] = append(pixels[i], v[i])
+		}
+	}
+
+	for i, v1 := range pixels {
+		var newPixel string
+		for _, v2 := range v1 {
+			if v2 == "0" {
+				newPixel = string('█')
+				break
+			} else if v2 == "1" {
+				newPixel = "1"
+				break
+			}
+		}
+		pixels[i] = []string{newPixel}
+	}
+
+	
+	formatPixels := make([]string, len(pixels))
+
+	for i, v := range pixels {
+		formatPixels[i] = v[0]
+	}
+
+	fmt.Println(formatPixels)
 }
 
 func readCSV() []string {
