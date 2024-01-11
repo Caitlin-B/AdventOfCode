@@ -1,15 +1,27 @@
 package utils
 
 import (
-    "go.uber.org/zap"
+    "bufio"
+    "fmt"
+    "os"
 )
 
-// Logger wraps zap logger
-type Logger struct {
-    *zap.Logger
-}
+func ScanInput(day int) []string {
+    file, err := os.Open(fmt.Sprintf("./2023/day%d/data.txt", day))
 
-// Error logs with the error log level.
-func (l *Logger) Error(msg string, fields ...zap.Field) {
-    l.Logger.Error(msg, fields...)
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    scanner := bufio.NewScanner(file)
+    scanner.Split(bufio.ScanLines)
+    var lines []string
+
+    for scanner.Scan() {
+        lines = append(lines, scanner.Text())
+    }
+
+    file.Close()
+
+    return lines
 }
