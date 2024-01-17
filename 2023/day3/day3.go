@@ -8,7 +8,8 @@ import (
 )
 
 func main() {
-    part1()
+    //part1()
+    part2()
 }
 
 func part1() {
@@ -22,9 +23,6 @@ func part1() {
         // find indexes of numbers
         numbers := matchNum.FindAllString(row, -1)
         indexesOfNumbers := matchNum.FindAllStringIndex(row, -1)
-
-        fmt.Println(indexesOfNumbers)
-        fmt.Println(numbers)
 
         // for all indexes
         for i, ind := range indexesOfNumbers {
@@ -64,20 +62,11 @@ func part1() {
             if rowIndex != 0 {
                 chars := inputs[rowIndex-1][startSearchIndex:endSearchIndex]
                 nextToSymbol = nextToSymbol || matchSymbol.MatchString(chars)
-                fmt.Println("chars: " + chars)
-                fmt.Println("regex: ")
-                fmt.Println(matchSymbol.MatchString(string(chars)))
-                fmt.Println("next to symbol:")
-                fmt.Println(nextToSymbol)
             }
             // find bellow chars (diag incl)
             if rowIndex != len(inputs)-1 { // 139 for final
                 chars := inputs[rowIndex+1][startSearchIndex:endSearchIndex]
                 nextToSymbol = nextToSymbol || matchSymbol.MatchString(chars)
-                fmt.Println("regex: ")
-                fmt.Println(matchSymbol.MatchString(string(chars)))
-                fmt.Println("next to symbol:")
-                fmt.Println(nextToSymbol)
             }
 
             if nextToSymbol == true {
@@ -93,4 +82,104 @@ func part1() {
 
         fmt.Println("---------")
     }
+}
+
+func part2() {
+    inputs := utils.ScanInput(3)
+
+    matchStar := regexp.MustCompile(`\*`)
+    matchNum := regexp.MustCompile(`[0-9]+`)
+
+    tot := 0
+    for rowIndex, row := range inputs {
+        // find indexes of star
+        indexesOfStars := matchStar.FindAllStringIndex(row, -1)
+        // for all indexes
+        for _, ind := range indexesOfStars {
+            adjNumbers := make([]string, 0, 6)
+
+            indexOfStar := ind[0]
+
+            startSearchIndex := 0
+            if indexOfStar > 3 {
+                startSearchIndex = indexOfStar - 3
+            }
+            endSearchIndex := ind[1] + 3
+            if endSearchIndex >= len(row) {
+                endSearchIndex = len(row) - 1
+            }
+
+            // find number left of star
+            if indexOfStar != 0 && matchNum.MatchString(string(row[indexOfStar-1])) {
+                numLeft := matchNum.FindString(row[startSearchIndex:indexOfStar])
+                adjNumbers = append(adjNumbers, numLeft)
+                fmt.Println("LEFTNUM", numLeft)
+            }
+            // find number right of star
+            if indexOfStar != len(row) && matchNum.MatchString(string(row[indexOfStar+1])) {
+                numRight := matchNum.FindString(row[indexOfStar:endSearchIndex])
+                adjNumbers = append(adjNumbers, numRight)
+                fmt.Println("RIGHTNUM", numRight)
+            }
+
+            // find number above star
+            if rowIndex != 0 {
+                numsAbove := getNumsInAdgRow(inputs[rowIndex-1][startSearchIndex:endSearchIndex])
+                adjNumbers = append(adjNumbers, numsAbove...)
+            }
+
+            // find number below star
+            if rowIndex != len(inputs)-1 {
+                numsBelow := getNumsInAdgRow(inputs[rowIndex+1][startSearchIndex:endSearchIndex])
+                adjNumbers = append(adjNumbers, numsBelow...)
+            }
+
+            fmt.Println("ADJNUMS", adjNumbers)
+
+            if len(adjNumbers) == 2 {
+                num1, err := strconv.Atoi(adjNumbers[0])
+                if err != nil {
+                    fmt.Println(err.Error())
+                }
+                num2, err := strconv.Atoi(adjNumbers[1])
+                if err != nil {
+                    fmt.Println(err.Error())
+                }
+
+                tot += num1 * num2
+            }
+
+        }
+    }
+    fmt.Println(tot)
+
+    fmt.Println("---------")
+}
+
+// str should be 7 long
+func getNumsInAdgRow(str string) []string {
+    matchNum := regexp.MustCompile(`[0-9]+`)
+    // split into numbers removing dots
+    nums := matchNum.FindAllString(str, -1)
+    idx := matchNum.FindAllStringIndex(str, -1)
+    // no numbers
+    if len(nums) == 0 {
+        return []string{}
+    }
+
+    adjNums := make([]string, 0, 2)
+
+    // check each number occupies middle three points (thus adj to *)
+    for i, num := range nums {
+        // if starts between 1 and 4 or finishes between 2 and 5
+        startAfter1 := 1 <= idx[i][0]
+        startBefore4 := idx[i][0] <= 4
+        endAfter3 := 3 <= idx[i][1]
+        endBefore5 := idx[i][1] <= 5
+        if (startAfter1 && startBefore4) || (endAfter3 && endBefore5) {
+            adjNums = append(adjNums, num)
+        }
+    }
+
+    return adjNums
 }
