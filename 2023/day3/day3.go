@@ -106,20 +106,18 @@ func part2() {
             }
             endSearchIndex := ind[1] + 3
             if endSearchIndex >= len(row) {
-                endSearchIndex = len(row) - 1
+                endSearchIndex = len(row)
             }
 
             // find number left of star
             if indexOfStar != 0 && matchNum.MatchString(string(row[indexOfStar-1])) {
                 numLeft := matchNum.FindString(row[startSearchIndex:indexOfStar])
                 adjNumbers = append(adjNumbers, numLeft)
-                fmt.Println("LEFTNUM", numLeft)
             }
             // find number right of star
-            if indexOfStar != len(row) && matchNum.MatchString(string(row[indexOfStar+1])) {
+            if indexOfStar != len(row)-1 && matchNum.MatchString(string(row[indexOfStar+1])) {
                 numRight := matchNum.FindString(row[indexOfStar:endSearchIndex])
                 adjNumbers = append(adjNumbers, numRight)
-                fmt.Println("RIGHTNUM", numRight)
             }
 
             // find number above star
@@ -133,8 +131,6 @@ func part2() {
                 numsBelow := getNumsInAdgRow(inputs[rowIndex+1][startSearchIndex:endSearchIndex])
                 adjNumbers = append(adjNumbers, numsBelow...)
             }
-
-            fmt.Println("ADJNUMS", adjNumbers)
 
             if len(adjNumbers) == 2 {
                 num1, err := strconv.Atoi(adjNumbers[0])
