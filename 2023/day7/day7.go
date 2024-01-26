@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/Caitlin-B/AdventOfCode/utils"
-	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -32,7 +31,7 @@ func day1() int {
 	// sum the bet * rank
 	sum := 0
 	for i, hand := range hands {
-		fmt.Println(hand.set, i)
+		//fmt.Println(hand.set, i)
 		sum += (i + 1) * hand.bid
 	}
 
@@ -74,39 +73,75 @@ func GetHandType(hand Hand) int {
 	}
 
 	// slice of card counts
-	v := make([]int, 0, len(tally))
+	c := make([]int, 0, len(tally))
 	for _, t := range tally {
-		v = append(v, t)
+		c = append(c, t)
 	}
-	// sort so uniform order
-	sort.Slice(v, func(i, j int) bool { return v[i] < v[j] })
 
+	// sort so uniform order
+	sort.Slice(c, func(i, j int) bool { return c[i] > c[j] })
+
+	// DAY2
+	// get number of any jokers
+	jokers := tally["J"]
+	// add to the total of the biggest card count (that isnt a joker) and remove joker from count
+	jokerRemoved := false // whether the joker value has been removed from the slice
+	jokerAdded := false   // whether the joker value has been added to another value
+	newc := make([]int, 0, len(tally))
+	for _, v := range c {
+		newv := 0
+		if v == jokers && jokerRemoved && jokerAdded {
+			newv = v
+		}
+		if v == jokers && jokerRemoved && !jokerAdded {
+			newv = v + jokers
+			jokerAdded = true
+		}
+		if v == jokers && !jokerRemoved {
+			// dont append
+			jokerRemoved = true
+			continue
+		}
+		if v != jokers && jokerAdded {
+			newv = v
+		}
+		if v != jokers && !jokerAdded {
+			newv = v + jokers
+			jokerAdded = true
+		}
+		newc = append(newc, newv)
+	}
+	// \DAY2
+
+	// handle edge case of all cards joker, which is 5 of a kind
+	if len(newc) == 0 {
+		return 7
+	}
 	// 5 of a kind
-	if reflect.DeepEqual(v, []int{5}) {
+	if newc[0] == 5 {
 		return 7
 	}
 	// 4 of a kind
-	if reflect.DeepEqual(v, []int{1, 4}) {
+	if newc[0] == 4 {
 		return 6
 	}
 	// full house
-	if reflect.DeepEqual(v, []int{2, 3}) {
+	if len(newc) > 1 && newc[0] == 3 && newc[1] == 2 {
 		return 5
 	}
 	// 3 of a kind
-	if reflect.DeepEqual(v, []int{1, 1, 3}) {
+	if newc[0] == 3 {
 		return 4
 	}
 	// 2 pair
-	if reflect.DeepEqual(v, []int{1, 2, 2}) {
+	if len(newc) > 1 && newc[0] == 2 && newc[1] == 2 {
 		return 3
 	}
 	// 1 pair
-	if reflect.DeepEqual(v, []int{1, 1, 1, 2}) {
+	if newc[0] == 2 {
 		return 2
 	}
 
-	// high card
 	return 1
 }
 
@@ -114,16 +149,16 @@ var cardOrder = map[string]int{
 	"A": 1,
 	"K": 2,
 	"Q": 3,
-	"J": 4,
-	"T": 5,
-	"9": 6,
-	"8": 7,
-	"7": 8,
-	"6": 9,
-	"5": 10,
-	"4": 11,
-	"3": 12,
-	"2": 13}
+	"T": 4,
+	"9": 5,
+	"8": 6,
+	"7": 7,
+	"6": 8,
+	"5": 9,
+	"4": 10,
+	"3": 11,
+	"2": 12,
+	"J": 13}
 
 // SortHighCard returns true of first hand is higher than second
 func SortHighCard(first, second Hand) bool {
