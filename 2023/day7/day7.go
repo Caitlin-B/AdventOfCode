@@ -14,10 +14,10 @@ type Hand struct {
 }
 
 func main() {
-	fmt.Println(day1())
+	fmt.Println(part1())
 }
 
-func day1() int {
+func part1() int {
 	inputs := utils.ScanInput(7)
 	hands := inputToHands(inputs)
 

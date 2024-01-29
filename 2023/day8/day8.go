@@ -12,12 +12,12 @@ type Step struct {
 
 func main() {
 	inputs := utils.ScanInput(8)
-	a := day2(inputs)
+	a := part2(inputs)
 	fmt.Println(a)
 }
 
 // Finding LCM of all routes to Z
-func day2(inputs []string) int {
+func part2(inputs []string) int {
 	instructions := inputs[0]
 	allSteps := getSteps(inputs)
 
@@ -102,7 +102,7 @@ func getStepKeysThatEndInA(in map[string]Step) []string {
 	return endInAStep
 }
 
-func day1(inputs []string) int {
+func part1(inputs []string) int {
 	instructions := inputs[0]
 	steps := getSteps(inputs)
 
