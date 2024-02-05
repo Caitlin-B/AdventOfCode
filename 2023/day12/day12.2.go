@@ -2,40 +2,31 @@ package main
 
 import (
 	"fmt"
-	"github.com/Caitlin-B/AdventOfCode/utils"
 	"strconv"
 	"strings"
 )
 
-const (
-	operational = "."
-	damaged     = "#"
-	unknown     = "?"
-)
+var cache = make(map[string]int)
 
-func main() {
-	inputs := utils.ScanInput(12)
-
-	//sum := part1(inputs)
-	sum := part2(inputs)
-	fmt.Println(sum)
-}
-
-func part1(inputs []string) int {
+func part2(inputs []string) int {
 	sum := 0
 	for _, in := range inputs {
-		record, groups := parseIn(in)
-		sum += calc(record, groups)
+		springs, groups := parseIn2(in)
+		sum += calc2(springs, groups)
 	}
 	return sum
 }
 
-func parseIn(in string) (string, []int) {
+func parseIn2(in string) (string, []int) {
 	split := strings.Split(in, " ")
 	record := split[0]
-	groupStr := strings.Split(split[1], ",")
-	groupInt := make([]int, 0, len(groupStr))
-	for _, g := range groupStr {
+	record = strings.Repeat(record+"?", 5)
+	record = record[:len(record)-1]
+	groupStr := strings.Repeat(split[1]+",", 5)
+	groupStr = groupStr[:len(groupStr)-1]
+	groupStrSpl := strings.Split(groupStr, ",")
+	groupInt := make([]int, 0, len(groupStrSpl))
+	for _, g := range groupStrSpl {
 		i, err := strconv.Atoi(g)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -46,7 +37,11 @@ func parseIn(in string) (string, []int) {
 	return record, groupInt
 }
 
-func calc(springs string, groups []int) int {
+func getKey(springs string, groups []int) string {
+	return springs + fmt.Sprintf("%v", groups)
+}
+
+func calc2(springs string, groups []int) int {
 	springs = strings.Trim(springs, operational)
 
 	// if no springs left, confirm no groups left, otherwise not a valid arrangement
@@ -75,7 +70,14 @@ func calc(springs string, groups []int) int {
 	// if first char is unknown - evaluate as either operational or damaged
 	if string(springs[0]) == unknown {
 		// calc as operational
-		sum = calc(springs[1:], groups)
+		key := getKey(springs[1:], groups)
+		c, ok := cache[key]
+		if !ok {
+			c = calc2(springs[1:], groups)
+			cache[key] = c
+		}
+		sum = c
+
 		// calc as damaged
 		springs = damaged + springs[1:]
 	}
@@ -99,5 +101,12 @@ func calc(springs string, groups []int) int {
 		springs = springs[:groups[0]] + operational + springs[groups[0]+1:]
 	}
 
-	return sum + calc(springs[groups[0]:], groups[1:])
+	key := getKey(springs[groups[0]:], groups[1:])
+	c, ok := cache[key]
+	if !ok {
+		c = calc2(springs[groups[0]:], groups[1:])
+		cache[key] = c
+	}
+
+	return sum + c
 }
