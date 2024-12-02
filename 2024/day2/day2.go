@@ -18,23 +18,47 @@ func main() {
 			f, _ := strconv.ParseFloat(r, 64)
 			repFl = append(repFl, f)
 		}
-		if isSafe(repFl) {
+		fmt.Println(repFl)
+		if isSafe(repFl, -1) {
+			fmt.Println("safe")
 			totSafe++
+		} else {
+			for i := range repFl {
+				//fmt.Println()
+				//fmt.Println("itoskip, ", i)
+
+				if isSafe(repFl, i) {
+					fmt.Println("safe if removed")
+					totSafe++
+					break
+				}
+			}
 		}
 	}
 	fmt.Println(totSafe)
 }
 
-func isSafe(in []float64) bool {
+func isSafe(in []float64, itoSkip int) bool {
 	safeIncrease := 0
 	safeDecrease := 0
 
-	for i := range in[0 : len(in)-1] {
-		incr := in[i+1] - in[i]
+	lasti := len(in) - 1
+	if itoSkip == lasti {
+		lasti--
+	}
+	for i := range in[0:lasti] {
+		next := i + 1
+		if i == itoSkip {
+			continue
+		}
+		if next == itoSkip {
+			next++
+		}
+		incr := in[next] - in[i]
 		if math.Abs(incr) > 3 || math.Abs(incr) == 0 {
-			fmt.Println("big increase", in, in[i], " to ", in[i+1])
 			return false
 		}
+
 		if incr < 0 {
 			safeDecrease++
 		} else {
@@ -43,7 +67,6 @@ func isSafe(in []float64) bool {
 	}
 
 	if safeIncrease > 0 && safeDecrease > 0 {
-		fmt.Println("not all increasing", in)
 		return false
 	}
 	return true
