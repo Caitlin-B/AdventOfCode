@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	inputs := utils.ScanInput(14)
+	inputs := utils.ScanInput(14, 2023)
 	//inputs = rollNorth(inputs, 2, 1)
 
 	for i := 1; i < len(inputs); i++ { // skip first row, nothing will roll from there
