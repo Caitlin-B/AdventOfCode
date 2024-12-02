@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	inputs := utils.ScanInput(10)
+	inputs := utils.ScanInput(10, 2023)
 
 	initiali, initialj := 0, 0
 	// get starting coords

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-    inputs := utils.ScanInput(2)
+    inputs := utils.ScanInput(2, 2023)
 
     tot := 0
     for _, game := range inputs {

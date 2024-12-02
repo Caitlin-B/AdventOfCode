@@ -11,7 +11,7 @@ type Step struct {
 }
 
 func main() {
-	inputs := utils.ScanInput(8)
+	inputs := utils.ScanInput(8, 2023)
 	a := part2(inputs)
 	fmt.Println(a)
 }

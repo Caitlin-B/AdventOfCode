@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	inputs := utils.ScanInput(9)
+	inputs := utils.ScanInput(9, 2023)
 	tot := 0
 	for _, in := range inputs {
 		inInt := inputToInt(in)

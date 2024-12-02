@@ -14,7 +14,7 @@ const (
 )
 
 func main() {
-	inputs := utils.ScanInput(12)
+	inputs := utils.ScanInput(12, 2023)
 
 	//sum := part1(inputs)
 	sum := part2(inputs)

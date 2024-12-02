@@ -7,14 +7,14 @@ import (
     "strconv"
 )
 
-func ScanInput(day int) []string {
-    file, err := os.Open(fmt.Sprintf("./2023/day%d/data.txt", day))
+func ScanInput(day, year int) []string {
+    f, err := os.Open(fmt.Sprintf("./%d/day%d/data.txt", year, day))
 
     if err != nil {
         fmt.Println(err)
     }
 
-    scanner := bufio.NewScanner(file)
+    scanner := bufio.NewScanner(f)
     scanner.Split(bufio.ScanLines)
     var lines []string
 
@@ -22,7 +22,7 @@ func ScanInput(day int) []string {
         lines = append(lines, scanner.Text())
     }
 
-    file.Close()
+    f.Close()
 
     return lines
 }

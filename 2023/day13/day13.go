@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-    inputs := utils.ScanInput(13)
+    inputs := utils.ScanInput(13, 2023)
     tot := 0
     pattern := make([]string, 0)
     for _, in := range inputs {

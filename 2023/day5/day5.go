@@ -28,7 +28,7 @@ func main() {
 }
 
 func part1() {
-	inputs := utils.ScanInput(5)
+	inputs := utils.ScanInput(5, 2023)
 
 	matchNum := regexp.MustCompile(`[0-9]+`)
 

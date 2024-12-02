@@ -9,7 +9,7 @@ import (
 const expansionMultiplier = 1000000
 
 func main() {
-	inputs := utils.ScanInput(11)
+	inputs := utils.ScanInput(11, 2023)
 
 	part1(inputs)
 	part2(inputs)

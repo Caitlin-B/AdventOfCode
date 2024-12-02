@@ -18,7 +18,7 @@ func main() {
 }
 
 func part1() int {
-	inputs := utils.ScanInput(7)
+	inputs := utils.ScanInput(7, 2023)
 	hands := inputToHands(inputs)
 
 	for _, hand := range hands {

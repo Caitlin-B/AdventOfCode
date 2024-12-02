@@ -15,7 +15,7 @@ func main() {
 // slice of card copies
 
 func part2() {
-	inputs := utils.ScanInput(4)
+	inputs := utils.ScanInput(4, 2023)
 
 	matchesOnCards := make([]int, len(inputs))
 	cardCopies := make([]int, len(inputs))
@@ -41,7 +41,7 @@ func part2() {
 }
 
 func part1() {
-	inputs := utils.ScanInput(4)
+	inputs := utils.ScanInput(4, 2023)
 
 	sum := 0
 	for _, i := range inputs {
